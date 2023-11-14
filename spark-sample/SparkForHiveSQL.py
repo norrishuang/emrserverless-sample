@@ -7,6 +7,33 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 
 # SparkSQL for EMRServerless
+# 该脚本用于使用SparkSQL进行HiveSQL语句的执行
+# 脚本参数说明
+#   [-f --sqlfile] HiveSQL脚本存放的S3路径，例如：s3://<s3-bucket>/sqlfiles/mysql-scrirpt.sql
+#   [-s --s3bucket] 指定 spark.sql.warehouse.dir 路径的 s3 桶名称， s3://{s3buchet_name}/warehouse/
+#   [-h --hivevar] Parameters input to the sql file. Example：—hivevar DT=’20220901’ —hivevar 
+#   [-d --database] 指定hive数据库，默认 default
+
+# EMR Serverless 举例
+'''
+aws emr-serverless start-job-run \
+	--application-id $SPARK_APPLICATION_ID \
+  --execution-role-arn $JOB_ROLE_ARN \
+  --job-driver '{
+      "sparkSubmit": {
+          "entryPoint": "s3://'${S3_BUCKET}'/SparkJobSample.py",
+          "entryPointArguments":["-f","'${SPARKSQLFILE}'","-s","'${S3_BUCKET}'","--hivevar","DT=\"'${PARAM01}'\"","--hivevar","HOUR=\"'${HOUR}'\""],
+          "sparkSubmitParameters": "--jars s3://'${S3_BUCKET}'/'${JDBCDriver}' --conf spark.hadoop.javax.jdo.option.ConnectionDriverName='${JDBCDriverClass}' --conf spark.hadoop.javax.jdo.option.ConnectionUserName='${DBUSER}' --conf spark.hadoop.javax.jdo.option.ConnectionPassword='${DBPASSWORD}' --conf spark.hadoop.javax.jdo.option.ConnectionURL=\"jdbc:mariadb://'${MariaDBHost}':3306/hivemetastore\"  --conf spark.driver.cores=2 --conf spark.executor.memory=2G --conf spark.driver.memory=2G --conf spark.executor.cores=2"
+        }
+     }' \
+    --configuration-overrides '{
+        "monitoringConfiguration": {
+        "s3MonitoringConfiguration": {
+            "logUri": "s3://'${S3_BUCKET}'/sparklogs/"
+        }
+    }
+}'
+'''
 
 if __name__ == "__main__":
 
@@ -70,7 +97,7 @@ if __name__ == "__main__":
     spark.sql(f'use {database}')
     #遍历 sqlList 执行, 需要从变量域中获取变量 format_map(vars())，因此sql中定义的变量格式 {parameter}
     for sql in sqlList:
-        if sql != '':
+        if sql.strip() != '':
             logger.info("execsql:" + sql)
             print("execsql:" + sql)
             spark.sql(sql.format_map(vars())).show()
