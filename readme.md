@@ -7,7 +7,7 @@
 
   
     * 通过Spark运行HiveSQL的方法，参考代码 spark-sample/SparkForHiveSQL.py
-        ''' shell
+        ```shell
         aws emr-serverless start-job-run \
             --application-id $SPARK_APPLICATION_ID \
         --execution-role-arn $JOB_ROLE_ARN \
@@ -25,6 +25,6 @@
                 }
             }
         }'
-        '''
+        ```
 
 * DophinScheduler 调用 EMR Serverless 的方法
