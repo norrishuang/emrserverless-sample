@@ -1,6 +1,8 @@
 
 ## EMRServerless Sample
 
+本项目提供在 [Amazon EMR Serverless](https://docs.aws.amazon.com/emr/latest/EMR-Serverless-UserGuide/emr-serverless.html) 上提交任务的方法和例子。包括通过aws cli，MWAA（airflow），DophinScheduler等方式提交。
+
 * Airflow 调用 EMR Serverless 的方法
 
     * Airflow DAG 参考 airflow/spark-tpcds-glue-catalog.py
@@ -28,3 +30,4 @@
         ```
 
 * DophinScheduler 调用 EMR Serverless 的方法
+   * 由于使用aws cli命令启动EMR Serverless任务是异步的，因此需要在脚本中保持监控job执行的状态。参考[dolphinscheduler.sh](./dolphinscheduler-sample/dolphinscheduler.sh)

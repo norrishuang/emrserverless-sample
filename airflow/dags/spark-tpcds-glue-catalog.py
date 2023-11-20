@@ -137,5 +137,7 @@ with DAG(
         dag=dag
     )
 
-    job_starter_1 >> job_starter_2 >> job_starter_3 >> job_starter_4 >> job_starter_5
+    job_starter_1 >> job_starter_2
+    job_starter_2 >> job_starter_3 
+    job_starter_2 >> job_starter_4 >> job_starter_5
 # [END howto_operator_emr_serverless_job]

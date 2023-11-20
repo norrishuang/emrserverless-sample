@@ -1,15 +1,16 @@
 
-# 向 EMR Serverless 提交 SparkSQL任务 Glue Data Catalog
-SPARK_APPLICATION_ID=00fborselo6u0g09
-JOB_ROLE_ARN=arn:aws:iam::812046859005:role/EMR-Serverless-HMS-EMRServerlessJobRole-16C21VVE86SKI
-S3_BUCKET=emr-hive-us-east-1-812046859005
-MariaDBHost=mysql-db-01-v8.cghfgy0zyjlk.us-east-1.rds.amazonaws.com
+# 向 EMR Serverless 提交 SparkSQL任务 ,使用 Glue Data Catalog
+SPARK_APPLICATION_ID=<applicatonid>
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+JOB_ROLE_ARN=arn:aws:iam::$ACCOUNT_ID:role/<EMR-Serverless-JOB-ROLE>
+S3_BUCKET=<S3_BUCKET>
+MariaDBHost=<mysql-endpoint>
 SECRET_ID=rds-users-credentials
 DBUSER=$(aws secretsmanager get-secret-value --secret-id $SECRET_ID | jq --raw-output '.SecretString' | jq -r .MasterUsername)
 DBPASSWORD=$(aws secretsmanager get-secret-value --secret-id $SECRET_ID | jq --raw-output '.SecretString' | jq -r .MasterUserPassword)
 JDBCDriverClass=org.mariadb.jdbc.Driver
 JDBCDriver=mariadb-connector-java.jar
-SPARKSQLFILE=s3://emr-hive-us-east-1-812046859005/tpcds_2_4/q5.sql
+SPARKSQLFILE=s3://$S3_BUCKET/tpcds_2_4/q5.sql
 JOBNAME=SparkSQL_TPCDS_Q5
 # PARAM01='2020-01-02'
 # HOUR='18'
