@@ -1,0 +1,23 @@
+
+// 向已有集群提交任务
+// 在 DolphinScheduler 上选择 云->EMR
+// 程序选择 ADD_JOB_FLOW_STEPS
+
+{
+  "JobFlowId": "j-NU9RC2E3P5IO",
+  "Steps": [
+    {
+      "Name": "hive-sql-tpcds-1",
+      "ActionOnFailure": "CONTINUE",
+      "HadoopJarStep": {
+        "Jar": "command-runner.jar",
+        "Args": [
+          "hive-script",
+          "--run-hive-script",
+          "--args","-f",
+          "s3://emr-hive-us-east-1-812046859005/tpcds_2_4_hive/q1.sql"
+        ]
+      }
+    }
+  ]
+}
